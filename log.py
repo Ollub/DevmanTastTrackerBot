@@ -11,10 +11,7 @@ def setup_logging(
     ):
     """Setup logging configuration
     """
-    path = default_path
-    value = os.getenv(env_key, None)
-    if value:
-        path = value
+    path = os.getenv(env_key, default_path)
     if os.path.exists(path):
         with open(path, 'rt') as f:
             config = yaml.safe_load(f.read())
