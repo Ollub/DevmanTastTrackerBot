@@ -10,13 +10,14 @@ from log import setup_logging
 
 
 logger = logging.getLogger(__name__)
-setup_logging()
 
 updater = Updater(token = CONFIG["BOT_TOKEN"], request_kwargs=CONFIG['PROXY'])
 dp = updater.dispatcher
 
 
 def main():
+    setup_logging()
+    
     logger.info('Bot started')
     while True:
         try:
