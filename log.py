@@ -12,7 +12,7 @@ def setup_logging(
     """Setup logging configuration
     """
     path = default_path
-    value = os.getenv('env_key', None)
+    value = os.getenv(env_key, None)
     if value:
         path = value
     if os.path.exists(path):
