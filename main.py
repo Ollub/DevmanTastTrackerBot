@@ -3,6 +3,7 @@ import logging
 from requests.exceptions import ReadTimeout, ConnectionError
 import telegram
 from telegram.ext import Updater, CommandHandler
+from requests.exceptions import HTTPError
 
 from settings import CONFIG
 from dvmn import poll_dvmn_lesson_info, format_lesson_info
@@ -17,22 +18,24 @@ dp = updater.dispatcher
 
 def main():
     setup_logging()
-    
     logger.info('Bot started')
+    timestamp = None
+    #start polling dvmn API
     while True:
         try:
-            dvmn_reply, timestamp = poll_dvmn_lesson_info()
-            for lesson_info in dvmn_reply['new_attempts']:
+            lessons_info, timestamp = poll_dvmn_lesson_info(timestamp=timestamp)
+            if not lessons_info:
+                continue
+            for lesson_info in lessons_info:
+                logger.info(f'Get lesson info from dvmn.org :\n{lesson_info}')
                 formated_info = format_lesson_info(lesson_info)
-                logger.info(f'Get response from dvmn.org :\n{formated_info}')
                 updater.bot.send_message(chat_id=CONFIG['CHAT_ID'], text=formated_info)
         except ReadTimeout:
             logger.error('Timout Error')
         except ConnectionError:
             logger.error('Connection Error')
-
-    dvmn_reply = poll_dvmn_for_status()
-    return format_dmvn_reply(dvmn_reply)
+        except HTTPError:
+            logger.error('HTTPError')
 
 
 if __name__ == '__main__':
