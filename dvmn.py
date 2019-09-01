@@ -26,9 +26,10 @@ def poll_dvmn_lesson_info(timestamp=None, timeout=100):
     response.raise_for_status()
     logger.debug("Polling time = {}".format(start_time - time.time()))
 
-    timestamp = response.json().get('last_attempt_timestamp') or\
-                response.json().get('timestamp_to_request')
-    lessons_info = response.json().get('new_attempts')
+    dmvn_data = response.json()
+    timestamp = dmvn_data.get('last_attempt_timestamp') or\
+                dmvn_data.get('timestamp_to_request')
+    lessons_info = dmvn_data.get('new_attempts')
     return lessons_info, timestamp
 
 
