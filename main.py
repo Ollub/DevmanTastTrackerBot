@@ -31,16 +31,7 @@ def main():
                 formated_info = format_lesson_info(lesson_info)
                 updater.bot.send_message(chat_id=CONFIG['CHAT_ID'], text=formated_info)
         except ReadTimeout:
-            logger.debug('Timout Error')
-'''Комментарий проверяющему:
-текущий таймаут сервера 90сек. При этом при выстовлении таймаута в запросе 90 сек,
-сервер не успевает вернуть ответ ==>
-не получаем timestamp ==>
-можем пропустить момент проверки задачи.
-сейчас таймаут увеличен до 100сек, но при увеличении таймаута со стороны сервера,
-появляется риск не получить полезную информацию ==>
-ReadTimeot - не штатная ситуация.
-'''
+            continue
         except ConnectionError:
             logger.error('Connection Error')
         except HTTPError:
