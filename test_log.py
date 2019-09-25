@@ -1,23 +1,39 @@
 import logging
 from logging.handlers import RotatingFileHandler
 
-# print(help(RotatingFileHandler))
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-ch = logging.StreamHandler()
-fh = 
+
+class BotHandler(logging.Handler):
+    """
+    Telegram bot handler.
+    Takes instance of telegram.ext.Updater and chat_id as attribute
+    and sends logs as text messages to the chat using updater.
+    """
+    def __init__(self, updater, chat_id, *args, **kwargs):
+        self.updater = updater
+        self.chat_id = chat_id
+        super().__init__(*args, **kwargs)
+
+    def emit(self, record):
+        log_entry = self.format(record)
+        self.updater.bot.send_message(chat_id=self.chat_id, text=log_entry)
+
+    def get_logger(self):
+        print(self.updater, self.chat_id)
 
 
-logger = logging.getLogger("Название логера")
-logger.setLevel(logging.INFO)
-handler = RotatingFileHandler("!!!!!!test!!!!!!.log", maxBytes=200, backupCount=2, encoding='UTF-8')
-ch = logging.StreamHandler()
-logger.addHandler(handler)
+def setup_logging(updater, chat_id, logger_name=__name__):
+    logger = logging.getLogger(logger_name)
+    logger.setLevel(logging.INFO)
 
-logger.info("Я новый логер!")
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s')
-logging.debug('Сообщение для дебагинга')
-logging.info('Произошло какое-то событие. Всё идёт по плану.')
-logging.warning('Предупреждение, что-то могло сломаться')
-logging.error('Ошибка, что-то сломалось')
-logging.critical('МЫ В ОГНЕ ЧТО ДЕЛАТЬ?!?!')
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.INFO)
+    ch.setFormatter(formatter)
+
+    bh = BotHandler(updater, chat_id)
+    bh.setLevel(logging.INFO)
+    bh.setFormatter(formatter)
+
+    logger.addHandler(ch)
+    logger.addHandler(bh)
