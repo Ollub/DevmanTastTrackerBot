@@ -16,10 +16,12 @@ logger = logging.getLogger(__name__)
 updater = Updater(token = CONFIG["BOT_TOKEN"], request_kwargs=CONFIG['PROXY'])
 dp = updater.dispatcher
 
+#logging bot initialization
+log_bot_updater = Updater(token = CONFIG["LOG_BOT_TOKEN"], request_kwargs=CONFIG['PROXY'])
 
 def main():
     setup_logging()
-    logger = get_logger(updater, CONFIG['CHAT_ID'], 'my_logger')
+    logger = get_logger(log_bot_updater, CONFIG['CHAT_ID'], 'my_logger')
     logger.info('Bot started')
 
     # start polling dvmn API

@@ -5,6 +5,7 @@ load_dotenv()
 
 CONFIG = {
     'DVMN_TOKEN': os.getenv('DVMN_TOKEN'),
+    'LOG_BOT_TOKEN': os.getenv('LOG_BOT_TOKEN'),
     'BOT_TOKEN': os.getenv('BOT_TOKEN'),
     'CHAT_ID': os.getenv('CHAT_ID'),
     'PROXY': {
